@@ -4,6 +4,7 @@ import {
 import Root from "../layout/Root";
 import Home from "../Pages/Home";
 import Error from "../Pages/Error";
+import Login from "../Pages/Login";
 
 const router = createBrowserRouter([
     {
@@ -13,8 +14,12 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/",
-                element: <Home></Home>
-            }
+                element: <Home></Home>,
+            },
+            {
+                path: "login",
+                element: <Login></Login>
+            },
         ],
     },
 ]);
