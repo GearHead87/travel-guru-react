@@ -1,26 +1,29 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const Login = () => {
-    const {loginUser} = useContext(AuthContext);
+    const { loginUser } = useContext(AuthContext);
     const location = useLocation();
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
     const handleLogin = e => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
         const email = form.get("email");
         const password = form.get("password");
+        setError(null);
         loginUser(email, password)
-        .then((result)=>{
-            console.log(result.user);
-            navigate(location?.state ? location.state : "/");
-        })
-        .catch((error)=>{
-            console.log(error);
-        })
-    };  
+            .then((result) => {
+                console.log(result.user);
+                navigate(location?.state ? location.state : "/");
+            })
+            .catch((error) => {
+                console.log(error);
+                setError(error.message);
+            })
+    };
 
     return (
         <div>
@@ -43,6 +46,11 @@ const Login = () => {
                     </div>
                     <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                 </form>
+                {error
+                    ? <h2 className="text-red-600">{error}</h2>
+                    : <></>
+
+                }
                 <p className="mt-4">Dont have a account <Link className="text-sm font-medium text-gray-900 dark:text-gray-300 " to={"/register"}> Create an account </Link></p>
             </div>
         </div>
