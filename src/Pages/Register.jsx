@@ -1,5 +1,7 @@
 import useAuth from "../hooks/useAuth";
 import { useForm } from "react-hook-form"
+import Button from '@mui/material/Button';
+
 
 const Register = () => {
     const { createUser } = useAuth();
@@ -44,7 +46,9 @@ const Register = () => {
 
                 {errors.email && <span className="text-red-700">This field is required</span>}
 
-                <input className="btn" type="submit" />
+                {/* <input className="btn" type="submit" /> */}
+                <Button type="submit" variant="contained">Submit</Button>
+                
             </form>
         </div>
     );
