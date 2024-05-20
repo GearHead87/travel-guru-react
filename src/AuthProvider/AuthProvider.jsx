@@ -1,8 +1,11 @@
 import { createContext, useEffect, useState } from "react";
+import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import PropTypes from 'prop-types';
 import { auth } from "../Firebase/Firebase.config";
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 export const AuthContext = createContext(null);
+const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -10,13 +13,30 @@ const AuthProvider = ({ children }) => {
 
 
     const createUser = (email, password) => {
-        setLoading(true);
+        // setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password);
     }
 
-    const loginUser = (email, password) =>{
-        setLoading(true);
+    const loginUser = (email, password) => {
+        // setLoading(true);
         return signInWithEmailAndPassword(auth, email, password);
+    }
+
+    const googleLoginUser = () => {
+        // setLoading(true);
+        return signInWithPopup(auth, googleProvider);
+    }
+
+    const githubLoginUser = () => {
+        // setLoading(true);
+        return signInWithPopup(auth, githubProvider);
+    }
+
+    const updateUserProfile = (userName, userPhotoURL) => {
+        // setLoading(true);
+        return updateProfile(auth.currentUser, {
+            displayName: userName, photoURL: userPhotoURL
+        })
     }
 
     const logOut = () => {
@@ -24,22 +44,41 @@ const AuthProvider = ({ children }) => {
         return signOut(auth);
     }
 
-    useEffect(()=>{
-        const unSubscribe = onAuthStateChanged(auth, (currentUser)=>{
+    useEffect(() => {
+        const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+            // const userEmail = currentUser?.email || user?.email;
+            // const loggedUser = { email: userEmail }
             setUser(currentUser);
             console.log("current user", currentUser);
             setLoading(false);
+            // if User Exists
+            // if (currentUser) {
+            //     axios.post(`${import.meta.env.VITE_API_URL}/jwt`, loggedUser, { withCredentials: true })
+            //         .then(res => {
+            //             console.log('token response', res.data);
+            //         })
+            // }
+            // else {
+            //     axios.post(`${import.meta.env.VITE_API_URL}/logout`, loggedUser, { withCredentials: true })
+            //         .then(res => {
+            //             console.log(res.data);
+            //         })
+            // }
         });
-        return () =>{
-            unSubscribe();  
+        return () => {
+            unSubscribe();
         }
-    },[]);
+    }, [user?.email]);
 
     const authInfo = {
         user,
         createUser,
         loginUser,
+        googleLoginUser,
+        githubLoginUser,
         logOut,
+        updateUserProfile,
+        setLoading,
         loading,
     };
     return (
@@ -50,3 +89,7 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
+AuthProvider.propTypes = {
+    children: PropTypes.node,
+}
