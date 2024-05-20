@@ -4,7 +4,6 @@ import Navbar from "../Components/Navbar";
 const Destination = () => {
     const [name, setName] = useState("");
     const nameRef = useRef("");
-    const [counter, setCounter] = useState(1);
     const handleForm = e =>{
         e.preventDefault();
         console.log(nameRef.current.value)
